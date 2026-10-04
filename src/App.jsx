@@ -1,27 +1,58 @@
-import { useState } from 'react';
-import productos from './data/productos';
+import { useState, useEffect } from 'react';
 import ProductCard from './components/ProductCard';
 import Cart from './components/Cart';
 import './App.css';
 
 function App() {
-  // useState: React "recuerda" el carrito entre renderizados.
-  // carrito es el valor actual; setCarrito es la única forma permitida de cambiarlo.
+  // Estado del catálogo: empieza vacío hasta que useEffect lo llene.
+  const [productos, setProductos] = useState([]);
+
+  // Estado de carga: permite mostrar "Cargando..." mientras llega el fetch.
+  const [cargando, setCargando] = useState(true);
+
+  // Estado del carrito, igual que la semana pasada.
   const [carrito, setCarrito] = useState([]);
 
-  // Se llama cuando ProductCard avisa que se hizo click en "Agregar al carrito".
+  // useEffect con dependencias vacías [] : se ejecuta UNA SOLA VEZ,
+  // justo cuando el componente App aparece en pantalla por primera vez.
+  // Aquí simulamos la carga de datos desde una fuente externa.
+  useEffect(function () {
+    fetch(`${import.meta.env.BASE_URL}productos.json`)
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Error al cargar productos: ' + response.status);
+        }
+        return response.json();
+      })
+      .then(function (data) {
+        setProductos(data);   // actualiza el catálogo con los datos recibidos
+        setCargando(false);   // avisa que la carga terminó
+      })
+      .catch(function (error) {
+        console.error(error);
+        setCargando(false);
+      });
+  }, []); // <- array de dependencias vacío: correr solo al montar el componente
+
   function agregarAlCarrito(producto) {
     setCarrito(function (carritoActual) {
       return [...carritoActual, producto];
     });
   }
 
-  // Se llama cuando Cart avisa que se hizo click en "Quitar", pasando la posición.
   function quitarDelCarrito(index) {
     setCarrito(function (carritoActual) {
       return carritoActual.filter(function (_, i) {
         return i !== index;
       });
+    });
+  }
+
+  // Función auxiliar: revisa si un producto ya está en el carrito,
+  // comparando por id. La usa ProductCard para decidir qué texto mostrar.
+  function estaEnCarrito(id) {
+    return carrito.some(function (item) {
+      return item.id === id;
     });
   }
 
@@ -33,15 +64,21 @@ function App() {
       </header>
 
       <main className="product-grid">
-        {productos.map(function (producto) {
-          return (
-            <ProductCard
-              key={producto.id}
-              producto={producto}
-              onAgregar={agregarAlCarrito}
-            />
-          );
-        })}
+        {/* Renderizado condicional: mensaje de carga mientras llega el fetch */}
+        {cargando ? (
+          <p className="cargando-msg">Cargando productos...</p>
+        ) : (
+          productos.map(function (producto) {
+            return (
+              <ProductCard
+                key={producto.id}
+                producto={producto}
+                enCarrito={estaEnCarrito(producto.id)}
+                onAgregar={agregarAlCarrito}
+              />
+            );
+          })
+        )}
       </main>
 
       <Cart carrito={carrito} onQuitar={quitarDelCarrito} />
