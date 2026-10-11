@@ -2,24 +2,27 @@
   {
     "id": 1,
     "nombre": "Zelda: Breath of the Wild",
+    "categoria": "Aventura",
     "descripcion": "Explora el vasto reino de Hyrule.",
     "precio": 39990,
     "precioOferta": null,
     "stock": 5,
-    "imagen": "https://i5.walmartimages.com/asr/88fdeff7-b5c7-4dc1-9d30-66217f20f86c.3d08635afa4636f1074ae99ebf602b92.jpeg"
+    "imagen": "https://m.media-amazon.com/images/M/MV5BY2QwOGJlZDQtMDhhNi00M2YwLWFiNzctZGI3NDc4ZGY0OGZjXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
   },
   {
     "id": 2,
     "nombre": "Monster Hunter Rise",
+    "categoria": "Acción",
     "descripcion": "Caza monstruos gigantes y mejora tu equipamiento.",
     "precio": 34990,
     "precioOferta": 27990,
     "stock": 3,
-    "imagen": "https://cdn.hmv.com/r/w-640/hmv/files/8d/8dafa2ee-3179-4c85-b624-975164cc1185.png"
+    "imagen": "https://store-images.s-microsoft.com/image/apps.22126.14283639805282814.7e14f5b2-0f43-4aaa-9ca9-456521aafe46.059a667f-2efe-4b5c-93a4-c834cb07fed7"
   },
   {
     "id": 3,
     "nombre": "Monster Hunter Wilds",
+    "categoria": "Acción",
     "descripcion": "La nueva generación de cacería en mundos más dinámicos.",
     "precio": 44990,
     "precioOferta": null,
@@ -29,6 +32,7 @@
   {
     "id": 4,
     "nombre": "The Last of Us Remastered",
+    "categoria": "Supervivencia",
     "descripcion": "Una historia inolvidable de supervivencia y aventura.",
     "precio": 29990,
     "precioOferta": 19990,
