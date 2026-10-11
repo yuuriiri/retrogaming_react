@@ -1,3 +1,4 @@
+/* ===== Paleta RetroGaming ===== */
 :root {
   --dark: #2A1B3D;
   --purple: #44318D;
@@ -6,101 +7,134 @@
   --sage: #A4B3B6;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 body {
-  margin: 0;
-  background: linear-gradient(180deg, #2A1B3D 0%, #1a1128 100%);
+  background: linear-gradient(180deg, #2A1B3D 0%, #1a1128 100%) fixed;
   color: var(--sage);
   font-family: 'Poppins', sans-serif;
 }
 
-.app {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 20px;
+html {
+  scroll-behavior: smooth;
 }
 
-/* ENCABEZADO */
-.app-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-  padding: 2rem 0;
+/* Que el navbar fijo no tape los títulos al navegar con los enlaces */
+section[id],
+header[id] {
+  scroll-margin-top: 70px;
+}
+
+/* ===== Navbar ===== */
+.navbar-retro {
+  background-color: var(--dark);
+  border-bottom: 2px solid var(--pink);
+}
+
+.badge-retro {
+  background-color: var(--pink);
+}
+
+/* ===== Hero ===== */
+.hero {
+  padding: 4rem 0;
   border-bottom: 1px solid rgba(216, 63, 135, 0.2);
+  margin-bottom: 2rem;
 }
 
-.app-header h1 {
+.hero h1 {
   color: #fff;
   font-weight: 800;
-  font-size: 2.5rem;
-  letter-spacing: 1px;
-  margin-bottom: 0.5rem;
 }
 
-.app-header p {
-  color: var(--sage);
-  font-size: 1.05rem;
+/* ===== Secciones ===== */
+.seccion {
+  padding: 2rem 0;
 }
 
-/* MENSAJE DE CARGA */
-.cargando-msg {
-  grid-column: 1 / -1;
-  text-align: center;
-  font-size: 1.1rem;
+.titulo-seccion {
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.mensaje-vacio {
   color: var(--sage);
   padding: 2rem 0;
 }
 
-/* GRID DE PRODUCTOS */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-  margin-bottom: 3rem;
+/* ===== Botones (sobrescriben colores de Bootstrap) ===== */
+.btn-retro {
+  background-color: var(--pink);
+  border-color: var(--pink);
+  color: #fff;
+  font-weight: 600;
 }
 
-.product-card {
+.btn-retro:hover,
+.btn-retro:focus {
+  background-color: #b9306f;
+  border-color: #b9306f;
+  color: #fff;
+}
+
+.btn-outline-retro {
+  color: var(--pink);
+  border-color: var(--pink);
+}
+
+.btn-outline-retro:hover {
+  background-color: var(--pink);
+  color: #fff;
+}
+
+.btn-coral {
+  background-color: var(--coral);
+  border-color: var(--coral);
+  color: #fff;
+}
+
+/* ===== Tarjetas de productos ===== */
+.card-retro {
   background-color: var(--purple);
+  color: var(--sage);
+  border: none;
   border-radius: 14px;
-  padding: 18px;
-  text-align: center;
-  position: relative;
+  overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.product-card:hover {
+.card-retro:hover {
   transform: translateY(-6px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
 }
 
-.product-img {
-  width: 100%;
-  height: 170px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 12px;
-}
-
-.product-card h3 {
+.card-retro .card-title {
   color: #fff;
   font-weight: 600;
-  font-size: 1.1rem;
-  margin: 0.5rem 0;
 }
 
-.product-desc {
-  font-size: 0.85rem;
+/* Flexbox: el contenido de la tarjeta va en columna, con el precio y los botones al fondo */
+.card-retro .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-img {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  object-fit: cover;
+  object-position: top center;
+  background-color: var(--dark);
+}
+
+.badge-categoria {
+  background-color: var(--dark);
   color: var(--sage);
-  min-height: 40px;
 }
 
 .product-price {
   font-weight: 700;
   color: #fff;
   font-size: 1.1rem;
-  margin: 0.75rem 0;
 }
 
 .precio-tachado {
@@ -108,7 +142,6 @@ body {
   color: var(--sage);
   font-weight: 400;
   font-size: 0.9rem;
-  margin-right: 6px;
 }
 
 .precio-oferta {
@@ -121,99 +154,51 @@ body {
   font-weight: 600;
 }
 
-/* BOTÓN FAVORITO */
-.btn-favorito {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(42, 27, 61, 0.7);
-  backdrop-filter: blur(4px);
-  border: none;
-  border-radius: 20px;
-  padding: 4px 10px;
-  font-size: 0.75rem;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn-favorito:hover {
-  background: rgba(216, 63, 135, 0.3);
-}
-
-/* BOTONES DE ACCIÓN */
-.product-card button:not(.btn-favorito) {
-  background-color: var(--pink);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  width: 100%;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.15s ease;
-}
-
-.product-card button:not(.btn-favorito):hover:not(:disabled) {
-  opacity: 0.88;
-  transform: scale(1.02);
-}
-
-.btn-en-carrito {
-  background-color: var(--sage) !important;
-  color: var(--dark) !important;
-  cursor: default !important;
-}
-
-/* CARRITO */
+/* ===== Carrito ===== */
 .cart {
   background-color: var(--purple);
   border-radius: 14px;
   padding: 24px;
-  margin-top: 2rem;
 }
 
-.cart h2 {
-  color: #fff;
-  font-weight: 700;
-  margin-top: 0;
-}
-
-.cart-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-}
-
-.cart-list li {
+.cart-list .list-group-item {
+  background: transparent;
+  color: var(--sage);
+  border-color: rgba(255, 255, 255, 0.1);
+  /* Flexbox: nombre y precio a la izquierda, botón "Quitar" a la derecha */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 0;
-  color: var(--sage);
-}
-
-.cart-list button {
-  background-color: var(--coral);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 5px 12px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: opacity 0.2s ease;
-}
-
-.cart-list button:hover {
-  opacity: 0.85;
+  gap: 0.75rem;
 }
 
 .cart-total {
   text-align: right;
   color: #fff;
   font-size: 1.2rem;
-  margin-top: 1.2rem;
+  margin: 1.2rem 0 0;
   padding-top: 1rem;
   border-top: 2px solid rgba(216, 63, 135, 0.3);
+}
+
+/* ===== Formularios ===== */
+.form-retro {
+  background-color: var(--purple);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.form-retro .form-label {
+  color: #fff;
+}
+
+/* ===== Footer ===== */
+.footer-retro {
+  background-color: var(--dark);
+  border-top: 2px solid var(--pink);
+  color: var(--sage);
+}
+
+.footer-retro hr {
+  border-color: rgba(255, 255, 255, 0.15);
 }

@@ -1,22 +1,28 @@
 import { useState, useEffect } from 'react';
-import ProductCard from './components/ProductCard';
+import Navbar from './components/Navbar';
+import FiltroCategorias from './components/FiltroCategorias';
+import ListaVideojuegos from './components/ListaVideojuegos';
+import FormularioAgregar from './components/FormularioAgregar';
 import Cart from './components/Cart';
+import FormularioContacto from './components/FormularioContacto';
+import Footer from './components/Footer';
 import './App.css';
 
+// Componente raíz. Aquí vive el ESTADO principal y se reparte a los hijos mediante props.
 function App() {
-  // Estado del catálogo: empieza vacío hasta que useEffect lo llene.
+  // Catálogo de videojuegos (empieza vacío hasta que useEffect lo llene).
   const [productos, setProductos] = useState([]);
-
-  // Estado de carga: permite mostrar "Cargando..." mientras llega el fetch.
+  // Mensaje de carga y de error para el fetch.
   const [cargando, setCargando] = useState(true);
-
-  // Estado del carrito, igual que la semana pasada.
+  const [error, setError] = useState('');
+  // Carrito de compras.
   const [carrito, setCarrito] = useState([]);
+  // Categoría seleccionada en el filtro ('Todas' = mostrar todo).
+  const [categoriaActiva, setCategoriaActiva] = useState('Todas');
 
-  // useEffect con dependencias vacías [] : se ejecuta UNA SOLA VEZ,
-  // justo cuando el componente App aparece en pantalla por primera vez.
-  // Aquí simulamos la carga de datos desde una fuente externa.
-  useEffect(function () {
+  // Pide los datos a public/productos.json y actualiza el estado cuando llegan.
+  // Valida response.ok antes de leer el JSON y muestra un error si algo falla.
+  function pedirProductos() {
     fetch(`${import.meta.env.BASE_URL}productos.json`)
       .then(function (response) {
         if (!response.ok) {
@@ -25,64 +31,153 @@ function App() {
         return response.json();
       })
       .then(function (data) {
-        setProductos(data);   // actualiza el catálogo con los datos recibidos
-        setCargando(false);   // avisa que la carga terminó
+        setProductos(data);
+        setCargando(false);
       })
-      .catch(function (error) {
-        console.error(error);
+      .catch(function (err) {
+        console.error(err);
+        setError('No pudimos cargar los videojuegos. Intenta nuevamente.');
         setCargando(false);
       });
-  }, []); // <- array de dependencias vacío: correr solo al montar el componente
+  }
 
+  // Botón "Reintentar": reinicia los mensajes y vuelve a pedir los datos.
+  function reintentar() {
+    setCargando(true);
+    setError('');
+    pedirProductos();
+  }
+
+  // useEffect con [] : se ejecuta UNA sola vez, cuando App aparece en pantalla.
+  // (cargando ya parte en true, por eso no hace falta cambiarlo aquí).
+  useEffect(function () {
+    pedirProductos();
+  }, []);
+
+  // ---- Carrito ----
   function agregarAlCarrito(producto) {
-    setCarrito(function (carritoActual) {
-      return [...carritoActual, producto];
+    setCarrito(function (actual) {
+      return [...actual, producto];
     });
   }
 
   function quitarDelCarrito(index) {
-    setCarrito(function (carritoActual) {
-      return carritoActual.filter(function (_, i) {
+    setCarrito(function (actual) {
+      return actual.filter(function (_, i) {
         return i !== index;
       });
     });
   }
 
-  // Función auxiliar: revisa si un producto ya está en el carrito,
-  // comparando por id. La usa ProductCard para decidir qué texto mostrar.
-  function estaEnCarrito(id) {
-    return carrito.some(function (item) {
-      return item.id === id;
+  // ---- Lista de videojuegos: agregar y eliminar ----
+  function agregarJuego(nuevoJuego) {
+    // Id único: el mayor id existente + 1.
+    const nuevoId = productos.reduce(function (max, p) {
+      return p.id > max ? p.id : max;
+    }, 0) + 1;
+
+    setProductos(function (actual) {
+      return [...actual, { ...nuevoJuego, id: nuevoId }];
     });
   }
 
+  function eliminarJuego(id) {
+    setProductos(function (actual) {
+      return actual.filter(function (p) {
+        return p.id !== id;
+      });
+    });
+    // Si estaba en el carrito, también lo sacamos.
+    setCarrito(function (actual) {
+      return actual.filter(function (item) {
+        return item.id !== id;
+      });
+    });
+  }
+
+  // ---- Datos derivados (se calculan a partir del estado) ----
+  // Categorías únicas presentes en el catálogo.
+  const categorias = [...new Set(productos.map(function (p) { return p.categoria; }))];
+
+  // Si la categoría activa desaparece (por eliminar su último juego), volvemos a 'Todas'.
+  const categoriaValida = categoriaActiva === 'Todas' || categorias.includes(categoriaActiva)
+    ? categoriaActiva
+    : 'Todas';
+
+  // Productos visibles según el filtro.
+  const productosFiltrados = categoriaValida === 'Todas'
+    ? productos
+    : productos.filter(function (p) { return p.categoria === categoriaValida; });
+
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Bienvenido a RetroGaming</h1>
-        <p>Explora nuestra colección de consolas y videojuegos.</p>
+    <>
+      <Navbar cantidadCarrito={carrito.length} />
+
+      <header id="inicio" className="hero text-center">
+        <div className="container">
+          <h1>Bienvenido a RetroGaming</h1>
+          <p className="lead">Explora nuestra colección de videojuegos.</p>
+          <a href="#catalogo" className="btn btn-retro btn-lg">Ver catálogo</a>
+        </div>
       </header>
 
-      <main className="product-grid">
-        {/* Renderizado condicional: mensaje de carga mientras llega el fetch */}
-        {cargando ? (
-          <p className="cargando-msg">Cargando productos...</p>
-        ) : (
-          productos.map(function (producto) {
-            return (
-              <ProductCard
-                key={producto.id}
-                producto={producto}
-                enCarrito={estaEnCarrito(producto.id)}
-                onAgregar={agregarAlCarrito}
+      <main className="container">
+        <section id="catalogo" className="seccion">
+          <h2 className="text-center titulo-seccion">Catálogo</h2>
+
+          {cargando && <p className="text-center mensaje-vacio">Cargando productos...</p>}
+
+          {error && (
+            <div className="alert alert-danger text-center" role="alert">
+              {error}{' '}
+              <button className="btn btn-sm btn-outline-danger ms-2" onClick={reintentar}>
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {!cargando && !error && (
+            <>
+              <FiltroCategorias
+                categorias={categorias}
+                categoriaActiva={categoriaValida}
+                onSeleccionar={setCategoriaActiva}
               />
-            );
-          })
-        )}
+              <ListaVideojuegos
+                productos={productosFiltrados}
+                carrito={carrito}
+                onAgregar={agregarAlCarrito}
+                onEliminar={eliminarJuego}
+              />
+            </>
+          )}
+        </section>
+
+        <section id="agregar" className="seccion">
+          <h2 className="text-center titulo-seccion">Agregar un videojuego</h2>
+          <div className="row justify-content-center">
+            <div className="col-lg-8">
+              <FormularioAgregar categorias={categorias} onAgregar={agregarJuego} />
+            </div>
+          </div>
+        </section>
+
+        <section id="carrito" className="seccion">
+          <Cart carrito={carrito} onQuitar={quitarDelCarrito} />
+        </section>
+
+        <section id="contacto" className="seccion">
+          <h2 className="text-center titulo-seccion">Contacto</h2>
+          <div className="row justify-content-center">
+            <div className="col-lg-6">
+              <FormularioContacto />
+            </div>
+          </div>
+        </section>
       </main>
 
-      <Cart carrito={carrito} onQuitar={quitarDelCarrito} />
-    </div>
+      <Footer />
+    </>
   );
 }
 
