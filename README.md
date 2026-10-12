@@ -31,7 +31,7 @@ La página principal muestra el catálogo de videojuegos, permite filtrarlos por
 ## Estructura del proyecto
 
 ```
-retrogaming-react/
+retrogaming_react/
 ├── index.html                 # Página base (carga Bootstrap y la fuente)
 ├── package.json
 ├── vite.config.js             # Configuración de Vite (base para GitHub Pages)
@@ -60,14 +60,19 @@ retrogaming-react/
 
 ## Instalación y uso
 
+### Probar sin instalar nada
+
+El sitio ya está publicado y se puede abrir directamente en el navegador: https://yuuriiri.github.io/retrogaming_react/
+
 ### Requisitos
 
-- [Node.js](https://nodejs.org/) 18 o superior
-- Conexión a internet (Bootstrap y la fuente se cargan por CDN)
+- [Node.js](https://nodejs.org/) **20.19 o superior** (o 22.12 o superior). Con versiones anteriores, como Node 18, Vite no funciona. Para revisar tu versión: `node -v`
+- [Git](https://git-scm.com/) (solo si vas a clonar el repositorio)
+- Conexión a internet (Bootstrap, la fuente y las imágenes de los juegos se cargan desde internet)
 
-### Pasos
+### Opción A: clonar desde GitHub
 
-1. Clonar el repositorio:
+1. Clonar el repositorio y entrar a la carpeta:
 
 ```bash
    git clone https://github.com/yuuriiri/retrogaming_react.git
@@ -87,6 +92,24 @@ retrogaming-react/
 ```
 
 4. Abrir en el navegador la dirección que aparece en la terminal (normalmente `http://localhost:5173/retrogaming_react/`).
+
+### Opción B: desde el archivo ZIP
+
+1. Descomprimir el archivo ZIP.
+2. Abrir una terminal dentro de la carpeta que contiene el archivo `package.json`.
+3. Instalar las dependencias:
+
+```bash
+   npm install
+```
+
+4. Iniciar el servidor de desarrollo:
+
+```bash
+   npm run dev
+```
+
+5. Abrir en el navegador la dirección que aparece en la terminal (normalmente `http://localhost:5173/retrogaming_react/`).
 
 ### Otros comandos
 
